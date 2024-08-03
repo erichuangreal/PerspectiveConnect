@@ -11,7 +11,8 @@ import os
 input_messages = [{"role": "system", "content": 'Please criticize the content and delivery my presentation and give constructive feedback for improvement!'}]
 
 
-client = OpenAI(api_key='sk-aichoicesservice-OFNmT1NXrWnmZB3262bYT3BlbkFJv3hIZDbp4I1M6yAfocNq')
+client = OpenAI(api_key='sk-aichoicesservice-OFNmT1NXrWnmZB3262bYT3BlbkFJv3hIZDbp4I1M6yAfocNq') 
+transcription = "";
 
 def generate_ai_response_file_path(length=10):
     # Get the current timestamp
@@ -30,17 +31,18 @@ def generate_ai_response_file_path(length=10):
 
 # Function to transcribe audio with a retry mechanism
 def transcribe_audio(audio_path, retries=5, delay=2):
+    global transcription
     recognizer = sr.Recognizer()
     for attempt in range(retries):
         if audio_path is not None and os.path.exists(audio_path):
             try:
                 with sr.AudioFile(audio_path) as source:
                     audio_data = recognizer.record(source)
-                transcription = recognizer.recognize_google(audio_data)
-                return transcription
+                    transcription += " " + recognizer.recognize_google(audio_data)
+                    return transcription
             except sr.UnknownValueError:
                 print("Audio not clear enough to transcribe.")
-                return ""
+                return transcription
         else:
             print(f"Attempt {attempt + 1}/{retries}: Audio file not available, retrying in {delay} seconds...")
             time.sleep(delay)
@@ -80,15 +82,31 @@ def process_presentation(audio):
     
     return transcription, feedback, audio_feedback_path
 
-ui = gr.Interface(fn=process_presentation, 
-                inputs=gr.Audio(sources=["microphone"],  type="filepath"), 
-                outputs=[
-                    gr.Textbox(label="Presentation"),
-                    gr.Textbox(label="AI Response"),
-                    gr.Audio(label="Audio Ai Response", type="filepath")
-                ],
-                title="AI Presentation Trainer",
-                description="Practise your presentation to get transcription, feedback, and audio feedback."
-            )
+def submit_callback():
+    global transcription
+    print("Processing presentation...")
+    # Step 2: Get feedback from GPT-3.5
+    feedback = get_feedback(transcription)
+    
+    # Step 3: Convert feedback to speech
+    audio_feedback_path = text_to_speech(feedback)
+    
+    return transcription, feedback, audio_feedback_path
+
+with gr.Blocks() as ui:
+    with gr.Row():
+        gr.Markdown("# AI Presentation Trainer")
+        gr.Markdown("Practice your presentation to get transcription, feedback, and audio feedback.")
+    
+    audio_input = gr.Audio(sources=["microphone"], type="filepath", streaming=True, every=10000, label="Record your presentation")
+    submit_button = gr.Button("Submit")
+
+    presentation_text = gr.Textbox(label="Presentation")
+    ai_response = gr.Textbox(label="AI Response")
+    audio_ai_response = gr.Audio(label="Audio AI Response", type="filepath")
+
+    audio_input.change(transcribe_audio, inputs=audio_input, outputs=[presentation_text])
+    submit_button.click(submit_callback, outputs=[ai_response, audio_ai_response])
+
 #ui.launch(auth=(server_name="0.0.0.0", server_port=7860, "test", "eric123321!"), share=True)
 ui.launch(share=True, server_name="0.0.0.0", server_port=7860)
