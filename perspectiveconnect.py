@@ -31,6 +31,7 @@ def generate_ai_response_file_path(length=10):
 
 # Function to transcribe audio with a retry mechanism
 def transcribe_audio(audio_path, retries=5, delay=2):
+    print("Transcribe audio... time: ", time.time())
     global transcription
     recognizer = sr.Recognizer()
     for attempt in range(retries):
@@ -85,20 +86,20 @@ def process_presentation(audio):
 def submit_callback():
     global transcription
     print("Processing presentation...")
-    # Step 2: Get feedback from GPT-3.5
+    # Step 1: Get feedback from GPT-3.5
     feedback = get_feedback(transcription)
     
-    # Step 3: Convert feedback to speech
+    # Step 2: Convert feedback to speech
     audio_feedback_path = text_to_speech(feedback)
-    
-    return transcription, feedback, audio_feedback_path
+    transcription = ""
+    return feedback, audio_feedback_path
 
 with gr.Blocks() as ui:
     with gr.Row():
         gr.Markdown("# AI Presentation Trainer")
         gr.Markdown("Practice your presentation to get transcription, feedback, and audio feedback.")
     
-    audio_input = gr.Audio(sources=["microphone"], type="filepath", streaming=True, every=10000, label="Record your presentation")
+    audio_input = gr.Audio(sources=["microphone"], type="filepath", streaming=True, every=10, label="Record your presentation")
     submit_button = gr.Button("Submit")
 
     presentation_text = gr.Textbox(label="Presentation")
