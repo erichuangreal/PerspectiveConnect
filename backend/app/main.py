@@ -25,7 +25,11 @@ app = FastAPI(title="perspectiveconnect api")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://159.89.112.149:3000",
+        "https://159.89.112.149:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
