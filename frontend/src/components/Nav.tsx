@@ -6,6 +6,7 @@ import { clearToken, getToken } from "@/lib/auth";
 import { usePathname, useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
 import { apiFetch } from "@/lib/api";
+import BackgroundSelector from "@/components/BackgroundSelector";
 
 function NavLink({ href, label }: { href: string; label: string }) {
   const pathname = usePathname();
@@ -66,6 +67,8 @@ export default function Nav() {
         </Link>
 
         <div className="flex items-center gap-3">
+          <BackgroundSelector />
+          
           {authed ? (
             <div className="flex flex-col items-end gap-1">
               <div className="flex items-center gap-2">

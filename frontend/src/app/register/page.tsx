@@ -35,7 +35,7 @@ export default function Register() {
   }
 
   return (
-    <div className="mx-auto max-w-md">
+    <div className="mx-auto max-w-md pt-12">
       <Card>
         <CardHeader
           title="Create your account"
