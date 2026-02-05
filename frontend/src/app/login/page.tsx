@@ -34,7 +34,7 @@ export default function Login() {
   }
 
   return (
-    <div className="mx-auto max-w-md">
+    <div className="mx-auto max-w-md pt-12">
       <Card>
         <CardHeader
           title="Welcome back"
