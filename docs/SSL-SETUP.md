@@ -44,7 +44,12 @@ sudo ufw delete allow 9000/tcp
 # Check firewall status
 sudo ufw status
 ```
-if firewall status is inactive
+
+**Why not open 4000 and 9000?** Frontend and backend are bound to `127.0.0.1`, so only Nginx on the same server can reach them. All external traffic goes through Nginx on **80** (HTTP) and **443** (HTTPS). Opening 4000/9000 would be unnecessary and less secure.
+
+**If firewall status is inactive:**
+
+```bash
 # Ensure SSH is allowed (IMPORTANT!)
 sudo ufw allow 22/tcp
 
@@ -53,6 +58,7 @@ sudo ufw enable
 
 # Check status again
 sudo ufw status
+```
 
 ---
 
