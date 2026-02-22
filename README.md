@@ -320,8 +320,8 @@ curl -X POST http://localhost:9000/auth/login \
 
 **Docker:**
 ```bash
-docker-compose logs -f backend
-docker-compose logs -f frontend
+docker compose logs -f backend
+docker compose logs -f frontend
 ```
 
 **Systemd:**
@@ -334,7 +334,7 @@ sudo journalctl -u perspectiveconnect-frontend -f
 
 ```bash
 # Docker
-docker-compose ps
+docker compose ps
 
 # Systemd
 sudo systemctl status perspectiveconnect-backend
@@ -386,7 +386,7 @@ sudo apt install ffmpeg
 ```
 
 **Database Connection Error:**
-- Check MySQL is running: `docker-compose ps`
+- Check MySQL is running: `docker compose ps`
 - Verify database credentials in `.env`
 
 **Port Already in Use:**
