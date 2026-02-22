@@ -25,12 +25,12 @@ sudo sh get-docker.sh
 sudo usermod -aG docker $USER
 newgrp docker
 
-# Install Docker Compose
-sudo apt install docker-compose -y
+# Install Docker Compose (V2 plugin)
+sudo apt install docker-compose-plugin -y
 
 # Verify installation
 docker --version
-docker-compose --version
+docker compose version
 ```
 
 ### 2. Clone and Configure Project
@@ -124,13 +124,13 @@ volumes:
 
 ```bash
 # Build and start services
-docker-compose -f docker-compose.prod.yml up -d --build
+docker compose -f docker-compose.prod.yml up -d --build
 
 # Check status
-docker-compose -f docker-compose.prod.yml ps
+docker compose -f docker-compose.prod.yml ps
 
 # View logs
-docker-compose -f docker-compose.prod.yml logs -f
+docker compose -f docker-compose.prod.yml logs -f
 ```
 
 ---
@@ -467,8 +467,8 @@ sudo tail -f /var/log/nginx/access.log
 sudo tail -f /var/log/nginx/error.log
 
 # Docker logs (if using Docker)
-docker-compose logs -f backend
-docker-compose logs -f frontend
+docker compose -f docker-compose.prod.yml logs -f backend
+docker compose -f docker-compose.prod.yml logs -f frontend
 ```
 
 ### Check Service Status
